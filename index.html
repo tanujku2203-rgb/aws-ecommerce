@@ -1,0 +1,47 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CloudCart - Online Shopping</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>CloudCart</h1>
+        <p>Your Smart Online Shopping Store</p>
+        <div class="cart">Cart: <span id="cart-count">0</span></div>
+    </header>
+
+    <main>
+        <h2>Featured Products</h2>
+        <section class="products">
+            <div class="product">
+                <div class="emoji">🎧</div>
+                <h3>Wireless Headphones</h3>
+                <p>₹1,499</p>
+                <button onclick="addToCart()">Add to Cart</button>
+            </div>
+            <div class="product">
+                <div class="emoji">⌚</div>
+                <h3>Smart Watch</h3>
+                <p>₹2,499</p>
+                <button onclick="addToCart()">Add to Cart</button>
+            </div>
+            <div class="product">
+                <div class="emoji">🎒</div>
+                <h3>Travel Backpack</h3>
+                <p>₹999</p>
+                <button onclick="addToCart()">Add to Cart</button>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>CloudCart | Powered by AWS Cloud</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

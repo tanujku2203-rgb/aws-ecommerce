@@ -1,0 +1,32 @@
+
+pipeline {
+    agent any
+
+    stages {
+
+        stage('Checkout') {
+            steps {
+                echo 'Getting CloudCart source code'
+            }
+        }
+
+        stage('Verify Website Files') {
+            steps {
+                sh '''
+                    echo "Checking website files..."
+                    ls -l
+                    test -f index.html
+                    test -f style.css
+                    test -f script.js
+                    echo "All website files are present!"
+                '''
+            }
+        }
+
+        stage('Build Complete') {
+            steps {
+                echo 'CloudCart pipeline completed successfully!'
+            }
+        }
+    }
+}

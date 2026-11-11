@@ -4,7 +4,7 @@ pipeline {
 
     environment {
         AWS_REGION = 'ap-south-1'
-        S3_BUCKET = 'YOUR_ACTUAL_S3_BUCKET_NAME'
+        S3_BUCKET = 'cloudcart-website-22'
     }
 
     stages {
@@ -36,7 +36,7 @@ pipeline {
                         export AWS_DEFAULT_REGION=$AWS_REGION
                         /usr/bin/aws s3 sync . s3://$S3_BUCKET/ \
                             --exclude ".git/*" \
-                            --exclude "Jenkinsfile"
+                            --exclude "jenkinsfile"
                     '''
                 }
             }

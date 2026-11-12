@@ -1,28 +1,72 @@
-stage('Invalidate CloudFront Cache') {
-    steps {
-        withCredentials([[
-            $class: 'AmazonWebServicesCredentialsBinding',
-            credentialsId: 'aws-cloudcart-credentials'
-        ]]) {
-            sh '''
-                /usr/bin/aws cloudfront create-invalidation \
-                    --distribution-id E2M55RQUAVVJAG \
-                    --paths "/*"
-            '''
+
+pipeline {
+    agent any
+
+    environment {
+        AWS_REGION = 'ap-south-1'
+        S3_BUCKET = 'cloudcart-website-22'
+        CLOUDFRONT_ID = 'E2M55RQUAVVJAG'
+    }
+
+    stages {
+
+        stage('Checkout') {
+            steps {
+                echo 'CloudCart source code downloaded'
+            }
+        }
+
+        stage('Verify Files') {
+            steps {
+                sh '''
+                    test -f index.html
+                    test -f style.css
+                    test -f script.js
+                    echo "Website files verified"
+                '''
+            }
+        }
+
+        stage('Deploy to S3') {
+            steps {
+                withCredentials([[
+                    $class: 'AmazonWebServicesCredentialsBinding',
+                    credentialsId: 'aws-cloudcart-credentials'
+                ]]) {
+                    sh '''
+                        export AWS_DEFAULT_REGION=$AWS_REGION
+
+                        /usr/bin/aws s3 sync . s3://$S3_BUCKET/ \
+                            --exclude ".git/*" \
+                            --exclude "Jenkinsfile"
+                    '''
+                }
+            }
+        }
+
+        stage('Invalidate CloudFront Cache') {
+            steps {
+                withCredentials([[
+                    $class: 'AmazonWebServicesCredentialsBinding',
+                    credentialsId: 'aws-cloudcart-credentials'
+                ]]) {
+                    sh '''
+                        /usr/bin/aws cloudfront create-invalidation \
+                            --distribution-id $CLOUDFRONT_ID \
+                            --paths "/*"
+                    '''
+                }
+            }
         }
     }
-}
-stage('Invalidate CloudFront Cache') {
-    steps {
-        withCredentials([[
-            $class: 'AmazonWebServicesCredentialsBinding',
-            credentialsId: 'aws-cloudcart-credentials'
-        ]]) {
-            sh '''
-                /usr/bin/aws cloudfront create-invalidation \
-                    --distribution-id E2M55RQUAVVJAG \
-                    --paths "/*"
-            '''
+
+    post {
+        success {
+            echo 'CloudCart successfully deployed to AWS!'
+        }
+
+        failure {
+            echo 'Deployment failed. Check Console Output.'
         }
     }
 }
